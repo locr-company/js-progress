@@ -4,7 +4,7 @@
   "description": "A class for handling progress",
   "type": "module",
   "scripts": {
-    "coverage": "c8 npm run test",
+    "test-with-coverage": "c8 npm run test",
     "test": "mocha",
     "tsc": "tsc"
   },
