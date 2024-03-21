@@ -1,4 +1,5 @@
 ![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/js-progress/node.js.yml)
+[![Quality Gate Status](https://sonarcloud.io/api/project_badges/measure?project=locr-company_js-progress&metric=alert_status)](https://sonarcloud.io/summary/new_code?id=locr-company_js-progress)
 
 # 1. How to use
 
