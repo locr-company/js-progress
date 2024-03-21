@@ -1,0 +1,37 @@
+{
+  "name": "progress",
+  "version": "0.1.0",
+  "description": "A class for handling progress",
+  "type": "module",
+  "scripts": {
+    "coverage": "c8 npm run test",
+    "test": "mocha",
+    "tsc": "tsc"
+  },
+  "keywords": [
+    "progress"
+  ],
+  "author": "Ringo Leese",
+  "license": "MIT",
+  "devDependencies": {
+    "@types/mocha": "^10.0.6",
+    "c8": "^9.1.0",
+    "chai": "^5.1.0",
+    "mocha": "^10.3.0",
+    "typescript": "^5.4.2"
+  },
+  "c8": {
+    "all": true,
+    "include": [
+      "src/**/*.js"
+    ],
+    "exclude": [
+      "test/**/*.js"
+    ],
+    "reporter": [
+      "lcov",
+      "text-summary",
+      "html"
+    ]
+  }
+}
