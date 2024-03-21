@@ -8,7 +8,7 @@
 # 1. How to use
 
 ```js
-import Progress from './src/js/Progress.js';
+import Progress from '@locr-company/progress';
 
 const progress = new Progress(1_000);
 progress.incrementCounter();
