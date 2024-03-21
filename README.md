@@ -1,3 +1,5 @@
+![github_workflow_status](https://img.shields.io/github/actions/workflow/status/locr-company/js-progress/node.js.yml)
+
 # 1. How to use
 
 ```js
