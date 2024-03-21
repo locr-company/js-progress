@@ -35,5 +35,13 @@ cd js-progress/.git/hooks && ln -s ../../git-hooks/* . && cd ../..
 npm install
 ```
 
+# 4. Publish a new version
+
+```bash
+npm version <major>.<minor>.<patch>
+git push
+git push origin --tags
+```
+
 [info-node]: package.json
 [shield-node]: https://img.shields.io/node/v/@locr-company/progress.svg
