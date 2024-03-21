@@ -31,6 +31,6 @@ jobs:
           registry-url: https://registry.npmjs.org/
       - run: npm ci
       - run: echo "PACKAGE_VERSION=${GITHUB_REF#refs/tags/}" >> $GITHUB_ENV
-      - run: npm publish --access public --tag $PACKAGE_VERSION
+      - run: npm publish --access public --tag @locr-company/progress@$PACKAGE_VERSION
         env:
           NODE_AUTH_TOKEN: ${{secrets.npm_token}}
