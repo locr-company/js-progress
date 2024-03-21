@@ -1,6 +1,6 @@
 {
   "name": "@locr-company/progress",
-  "version": "0.1.4",
+  "version": "0.1.5",
   "description": "A class for handling progress",
   "type": "module",
   "repository": {
