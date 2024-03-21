@@ -5,7 +5,13 @@
 ![github_tag](https://img.shields.io/github/v/tag/locr-company/js-progress)
 ![NPM Version](https://img.shields.io/npm/v/%40locr-company%2Fprogress)
 
-# 1. How to use
+# 1. Installation
+
+```bash
+npm install @locr-company/progress
+```
+
+# 2. How to use
 
 ```js
 import Progress from '@locr-company/progress';
@@ -19,7 +25,7 @@ progress.setCounter(1000);
 console.log(progress->PercentageCompleted); // 100
 ```
 
-# 2. Development
+# 3. Development
 
 Clone the repository
 
