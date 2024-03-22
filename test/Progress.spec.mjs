@@ -171,6 +171,35 @@ describe('Progress', function () {
         });
     });
 
+    describe('method on with ms threshold option', function () {
+        it('change event for incrementCounter with ms threshold option', async function () {
+            let eventFiredCounter = 0;
+            const progress = new Progress();
+            progress.on(
+                'change',
+                _progress => {
+                    eventFiredCounter++;
+                },
+                { updateIntervalMSThreshold: 100 }
+            );
+
+            for (let i = 0; i < 10; i++) {
+                progress.incrementCounter();
+            }
+
+            await new Promise((resolve) => setTimeout(resolve, 110));
+
+            progress.incrementCounter();
+
+            /**
+             * The event should be fired 2 times:
+             * 1. When the event is fired the first time
+             * 2. When the counter is incremented after the 100 ms
+             */
+            assert.equal(eventFiredCounter, 2);
+        });
+    });
+
     describe('method toFormattedString', function () {
         it('to formatted string with no totalCount', function () {
             const progress = new Progress();

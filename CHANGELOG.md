@@ -15,7 +15,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
--  constructor signature: constructor(totalCount?: number | null, locale?: string | null, unit?: string | null)
+- constructor signature: constructor(totalCount?: number | null, locale?: string | null, unit?: string | null)
+- method signature (added options): on(eventName: string, callback: Function, options: { updateIntervalMSThreshold?: number } | undefined = undefined): void
 
 ## [1.0.0] - 2024-03-21
 

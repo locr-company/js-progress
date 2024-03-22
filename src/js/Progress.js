@@ -109,16 +109,23 @@ class Progress {
         this._counter++;
         this.raiseEvent('change', this);
     }
-    on(eventName, callback) {
+    on(eventName, callback, options = {}) {
         if (!this._events[eventName]) {
             this._events[eventName] = [];
         }
-        this._events[eventName].push(callback);
+        this._events[eventName].push({ callback, options, internalData: {} });
     }
     raiseEvent(eventName, ...args) {
         if (this._events[eventName]) {
-            this._events[eventName].forEach(callback => {
-                callback(...args);
+            this._events[eventName].forEach(evt => {
+                if (typeof evt.options.updateIntervalMSThreshold === 'number' && evt.internalData.lastTimeEventFired) {
+                    const now = new Date();
+                    if (now.getTime() - evt.internalData.lastTimeEventFired.getTime() < evt.options.updateIntervalMSThreshold) {
+                        return;
+                    }
+                }
+                evt.internalData.lastTimeEventFired = new Date();
+                evt.callback(...args);
             });
         }
     }

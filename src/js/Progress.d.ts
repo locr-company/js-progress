@@ -1,3 +1,6 @@
+type EventOptions = {
+    updateIntervalMSThreshold?: number;
+};
 export default class Progress {
     static readonly DEFAULT_TO_STRING_FORMAT: string;
     private _counter;
@@ -28,10 +31,11 @@ export default class Progress {
     calculateEstimatedTimeOfArrival(): Date | null;
     private formatValue;
     incrementCounter(): void;
-    on(eventName: string, callback: Function): void;
+    on(eventName: string, callback: Function, options?: EventOptions): void;
     private raiseEvent;
     private static round;
     setCounter(value: number): void;
     setTotalCount(value: number): void;
     toFormattedString(format?: string): string;
 }
+export {};

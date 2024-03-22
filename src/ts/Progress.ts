@@ -1,3 +1,10 @@
+type EventOptions = {
+    updateIntervalMSThreshold?: number
+};
+type EventInternalData = {
+    lastTimeEventFired?: Date
+};
+
 export default class Progress {
     public static readonly DEFAULT_TO_STRING_FORMAT = 'progress => ${Counter}/${TotalCount} (${PercentageCompleted}%)' +
         '; elapsed: ${ElapsedTime}' +
@@ -5,7 +12,7 @@ export default class Progress {
         '; eta: ${EstimatedTimeOfArrival}';
 
     private _counter: number = 0;
-    private _events: { [key: string]: Function[] } = {};
+    private _events: { [key: string]: { callback: Function, options: EventOptions, internalData: EventInternalData }[] } = {};
     private _locale: string | null = null;
     private _startTime: Date;
     private _totalCount: number | null = null;
@@ -135,17 +142,26 @@ export default class Progress {
         this.raiseEvent('change', this);
     }
 
-    public on(eventName: string, callback: Function): void {
+    public on(eventName: string, callback: Function, options: EventOptions = {}): void {
         if (!this._events[eventName]) {
             this._events[eventName] = [];
         }
-        this._events[eventName].push(callback);
+        this._events[eventName].push({ callback, options, internalData: {} });
     }
 
     private raiseEvent(eventName: string, ...args: any[]): void {
         if (this._events[eventName]) {
-            this._events[eventName].forEach(callback => {
-                callback(...args);
+            this._events[eventName].forEach(evt => {
+                if (typeof evt.options.updateIntervalMSThreshold === 'number' && evt.internalData.lastTimeEventFired) {
+                    const now = new Date();
+                    if (now.getTime() - evt.internalData.lastTimeEventFired.getTime() < evt.options.updateIntervalMSThreshold) {
+                        return;
+                    }
+                }
+
+                evt.internalData.lastTimeEventFired = new Date();
+
+                evt.callback(...args);
             });
         }
     }

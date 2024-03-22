@@ -38,6 +38,8 @@ npm install
 # 4. Publish a new version
 
 ```bash
+# update CHANGELOG.md file
+
 npm version <major>.<minor>.<patch>
 git push
 git push origin --tags
