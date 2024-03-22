@@ -111,7 +111,10 @@ export default class Progress {
     }
 
     private formatValue(value: number, locale: string | null = null): string {
-        const options: { maximumFractionDigits?: number } = {};
+        const options: {
+            minimumFractionDigits?: number,
+            maximumFractionDigits?: number
+        } = {};
 
         let unitExt = '';
         if (this._unit) {
@@ -122,14 +125,17 @@ export default class Progress {
                     value /= 1024;
                     index++;
                 }
-                options['maximumFractionDigits'] = index === 0 ? 0 : 2;
-                value = Progress.round(value, options['maximumFractionDigits']);
+                options.maximumFractionDigits = index === 0 ? 0 : 2;
+                value = Progress.round(value, options.maximumFractionDigits);
                 unitExt = ` ${byteUnits[index]}`;
             }
         }
 
-        let valueString = value.toString();
+        let valueString = value.toFixed(options.maximumFractionDigits ?? 0);
         if (locale) {
+            if (options.maximumFractionDigits) {
+                options.minimumFractionDigits = options.maximumFractionDigits;
+            }
             valueString = new Intl.NumberFormat(locale, options).format(value);
         }
 

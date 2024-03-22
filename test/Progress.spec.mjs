@@ -241,6 +241,14 @@ describe('Progress', function () {
             assert.equal(progress.toFormattedString(), expectedString);
         });
 
+        it('to formatted string with no locale and byte greater than 1024 and ensure precision is fixed to 2', function () {
+            const progress = new Progress(null, null, 'byte');
+            progress.setCounter(1_950);
+
+            const expectedString = 'progress => 1.90 KiB/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
+            assert.equal(progress.toFormattedString(), expectedString);
+        });
+
         it('to formatted string with no totalCount and locale and byte unit', function () {
             const progress = new Progress(null, 'de-DE', 'byte');
             progress.setCounter(1_000);
@@ -254,6 +262,14 @@ describe('Progress', function () {
             progress.setCounter(2_400);
 
             const expectedString = 'progress => 2,34 KiB/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
+            assert.equal(progress.toFormattedString(), expectedString);
+        });
+
+        it('to formatted string with locale and byte greater than 1024 and ensure precision is fixed to 2', function () {
+            const progress = new Progress(null, 'de-DE', 'byte');
+            progress.setCounter(2_360);
+
+            const expectedString = 'progress => 2,30 KiB/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
             assert.equal(progress.toFormattedString(), expectedString);
         });
 
