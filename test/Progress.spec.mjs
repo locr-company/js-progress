@@ -54,6 +54,21 @@ describe('Progress', function () {
         });
     });
 
+    describe('method setTotalCount', function () {
+        it('setTotalCounter', function () {
+            const progress = new Progress();
+            expect(progress.TotalCount).to.be.null;
+
+            progress.setTotalCount(1_000);
+            assert.equal(progress.TotalCount, 1_000);
+        });
+
+        it('set invalid totalCount', function () {
+            const progress = new Progress();
+            expect(() => progress.setTotalCount(-1)).to.throw('Total count must be greater than or equal to 0');
+        });
+    });
+
     describe('method calculateEstimatedTimeOfArrival', function () {
         it('estimated time of arrival', async function () {
             const progress = new Progress(1_000);
@@ -165,6 +180,70 @@ describe('Progress', function () {
             assert.equal(progress.toFormattedString(), expectedString);
         });
 
+        it('to formatted string with no totalCount and no locale', function () {
+            const progress = new Progress();
+            progress.setCounter(1_000);
+
+            const expectedString = 'progress => 1000/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
+            assert.equal(progress.toFormattedString(), expectedString);
+        });
+
+        it('to formatted string with no totalCount and locale', function () {
+            const progress = new Progress(null, 'de-DE');
+            progress.setCounter(1_000);
+
+            const expectedString = 'progress => 1.000/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
+            assert.equal(progress.toFormattedString(), expectedString);
+        });
+
+        it('to formatted string with no totalCount and no locale and byte unit', function () {
+            const progress = new Progress(null, null, 'byte');
+            progress.setCounter(1_000);
+
+            const expectedString = 'progress => 1000 B/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
+            assert.equal(progress.toFormattedString(), expectedString);
+        });
+
+        it('to formatted string with no totalCount and no locale and byte unit greater than 1024', function () {
+            const progress = new Progress(null, null, 'byte');
+            progress.setCounter(2_000);
+
+            const expectedString = 'progress => 1.95 KiB/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
+            assert.equal(progress.toFormattedString(), expectedString);
+        });
+
+        it('to formatted string with no totalCount and locale and byte unit', function () {
+            const progress = new Progress(null, 'de-DE', 'byte');
+            progress.setCounter(1_000);
+
+            const expectedString = 'progress => 1.000 B/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
+            assert.equal(progress.toFormattedString(), expectedString);
+        });
+
+        it('to formatted string with no totalCount and locale and byte unit with counter greater than 1024', function () {
+            const progress = new Progress(null, 'de-DE', 'byte');
+            progress.setCounter(2_400);
+
+            const expectedString = 'progress => 2,34 KiB/- (N/A%); elapsed: 00:00:00; ete: N/A; eta: N/A';
+            assert.equal(progress.toFormattedString(), expectedString);
+        });
+
+        it('to formatted string with totalCount and locale and byte unit with totalCount greater than 1024', function () {
+            const progress = new Progress(2_000_000, 'de-DE', 'byte');
+            progress.setCounter(2_400);
+
+            let pattern = '^';
+            pattern += 'progress => \\d+,\\d+ ([KMGTPEZY]i)?B/\\d+,\\d+ ([KMGTPEZY]i)?B \\((\\d{1,3}(\\.\\d+)?)%\\)';
+            pattern += '; elapsed: \\d{2}:\\d{2}:\\d{2}';
+            pattern += '; ete: \\d{2}:\\d{2}:\\d{2}';
+            pattern += '; eta: \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}';
+            pattern += '$';
+            const re = new RegExp(pattern);
+            const matched = re.test(progress.toFormattedString());
+
+            assert.equal(matched, true);
+        });
+
         it('to formatted string with totalCount', async function () {
             const progress = new Progress(1_000);
 
@@ -174,6 +253,25 @@ describe('Progress', function () {
 
             let pattern = '^';
             pattern += 'progress => 1/1000 \\((\\d{1,3}(\\.\\d+)?)%\\)';
+            pattern += '; elapsed: \\d{2}:\\d{2}:\\d{2}';
+            pattern += '; ete: \\d{2}:\\d{2}:\\d{2}';
+            pattern += '; eta: \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}';
+            pattern += '$';
+            const re = new RegExp(pattern);
+            const matched = re.test(progress.toFormattedString());
+
+            assert.equal(matched, true);
+        });
+
+        it('to formatted string with totalCount and locale', async function () {
+            const progress = new Progress(1_000, 'de-DE');
+
+            await new Promise((resolve) => setTimeout(resolve, 1_000));
+
+            progress.incrementCounter();
+
+            let pattern = '^';
+            pattern += 'progress => 1/1.000 \\((\\d{1,3}(\\.\\d+)?)%\\)';
             pattern += '; elapsed: \\d{2}:\\d{2}:\\d{2}';
             pattern += '; ete: \\d{2}:\\d{2}:\\d{2}';
             pattern += '; eta: \\d{4}-\\d{2}-\\d{2} \\d{2}:\\d{2}:\\d{2}';

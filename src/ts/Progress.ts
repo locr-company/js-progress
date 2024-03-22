@@ -6,12 +6,16 @@ export default class Progress {
 
     private _counter: number = 0;
     private _events: { [key: string]: Function[] } = {};
+    private _locale: string | null = null;
     private _startTime: Date;
     private _totalCount: number | null = null;
+    private _unit: string | null = null;
 
-    constructor(totalCount: number | null = null) {
+    constructor(totalCount: number | null = null, locale: string | null = null, unit: string | null = null) {
+        this._locale = locale;
         this._startTime = new Date();
         this._totalCount = totalCount;
+        this._unit = unit;
     }
 
     public get Counter(): number {
@@ -88,8 +92,7 @@ export default class Progress {
         };
     }
 
-    public calculateEstimatedTimeOfArrival(): Date | null
-    {
+    public calculateEstimatedTimeOfArrival(): Date | null {
         const ete = this.calculateEstimatedTimeEnroute();
         if (ete === null) {
             return null;
@@ -100,14 +103,36 @@ export default class Progress {
         return now;
     }
 
+    private formatValue(value: number, locale: string | null = null): string {
+        const options: { maximumFractionDigits?: number } = {};
+
+        let unitExt = '';
+        if (this._unit) {
+            if (this._unit == 'byte') {
+                const byteUnits = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+                let index = 0;
+                while (value >= 1024 && index < byteUnits.length - 1) {
+                    value /= 1024;
+                    index++;
+                }
+                options['maximumFractionDigits'] = index === 0 ? 0 : 2;
+                value = Progress.round(value, options['maximumFractionDigits']);
+                unitExt = ` ${byteUnits[index]}`;
+            }
+        }
+
+        let valueString = value.toString();
+        if (locale) {
+            valueString = new Intl.NumberFormat(locale, options).format(value);
+        }
+
+        return valueString + unitExt;
+    }
+
     public incrementCounter(): void {
         this._counter++;
 
-        if (this._events['change']) {
-            this._events['change'].forEach((callback) => {
-                callback(this);
-            });
-        }
+        this.raiseEvent('change', this);
     }
 
     public on(eventName: string, callback: Function): void {
@@ -117,17 +142,35 @@ export default class Progress {
         this._events[eventName].push(callback);
     }
 
+    private raiseEvent(eventName: string, ...args: any[]): void {
+        if (this._events[eventName]) {
+            this._events[eventName].forEach(callback => {
+                callback(...args);
+            });
+        }
+    }
+
+    private static round(number: number, precision: number = 0): number {
+		const factor = Math.pow(10, precision);
+		return Math.round(number * factor) / factor;
+	}
+
     public setCounter(value: number): void {
         if (value < 0) {
             throw new Error('Counter must be greater than or equal to 0');
         }
         this._counter = value;
 
-        if (this._events['change']) {
-            this._events['change'].forEach((callback) => {
-                callback(this);
-            });
+        this.raiseEvent('change', this);
+    }
+
+    public setTotalCount(value: number): void {
+        if (value < 0) {
+            throw new Error('Total count must be greater than or equal to 0');
         }
+        this._totalCount = value;
+
+        this.raiseEvent('change', this);
     }
 
     public toFormattedString(format: string = Progress.DEFAULT_TO_STRING_FORMAT): string {
@@ -150,12 +193,12 @@ export default class Progress {
         }
 
         const replacements: Record<string, string> = {
-            '${Counter}': this._counter.toString(),
+            '${Counter}': this.formatValue(this._counter, this._locale),
             '${ElapsedTime}': `${String(elapsedTime.h).padStart(2, '0')}:${String(elapsedTime.i).padStart(2, '0')}:${String(elapsedTime.s).padStart(2, '0')}`,
             '${EstimatedTimeEnroute}': ete ? `${String(ete.hours).padStart(2, '0')}:${String(ete.minutes).padStart(2, '0')}:${String(ete.seconds).padStart(2, '0')}` : 'N/A',
             '${EstimatedTimeOfArrival}': formattedETA,
             '${PercentageCompleted}': this.PercentageCompleted !== null ? this.PercentageCompleted.toFixed(2) : 'N/A',
-            '${TotalCount}': this._totalCount ? this._totalCount.toString() : '-',
+            '${TotalCount}': this._totalCount ? this.formatValue(this._totalCount, this._locale) : '-',
         };
 
         for (const key in replacements) {

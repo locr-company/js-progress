@@ -1,10 +1,14 @@
 class Progress {
-    constructor(totalCount = null) {
+    constructor(totalCount = null, locale = null, unit = null) {
         this._counter = 0;
         this._events = {};
+        this._locale = null;
         this._totalCount = null;
+        this._unit = null;
+        this._locale = locale;
         this._startTime = new Date();
         this._totalCount = totalCount;
+        this._unit = unit;
     }
     get Counter() {
         return this._counter;
@@ -79,13 +83,31 @@ class Progress {
         now.setTime(now.getTime() + ete.hours * 60 * 60 * 1000 + ete.minutes * 60 * 1000 + ete.seconds * 1000);
         return now;
     }
+    formatValue(value, locale = null) {
+        const options = {};
+        let unitExt = '';
+        if (this._unit) {
+            if (this._unit == 'byte') {
+                const byteUnits = ['B', 'KiB', 'MiB', 'GiB', 'TiB', 'PiB', 'EiB', 'ZiB', 'YiB'];
+                let index = 0;
+                while (value >= 1024 && index < byteUnits.length - 1) {
+                    value /= 1024;
+                    index++;
+                }
+                options['maximumFractionDigits'] = index === 0 ? 0 : 2;
+                value = Progress.round(value, options['maximumFractionDigits']);
+                unitExt = ` ${byteUnits[index]}`;
+            }
+        }
+        let valueString = value.toString();
+        if (locale) {
+            valueString = new Intl.NumberFormat(locale, options).format(value);
+        }
+        return valueString + unitExt;
+    }
     incrementCounter() {
         this._counter++;
-        if (this._events['change']) {
-            this._events['change'].forEach((callback) => {
-                callback(this);
-            });
-        }
+        this.raiseEvent('change', this);
     }
     on(eventName, callback) {
         if (!this._events[eventName]) {
@@ -93,16 +115,30 @@ class Progress {
         }
         this._events[eventName].push(callback);
     }
+    raiseEvent(eventName, ...args) {
+        if (this._events[eventName]) {
+            this._events[eventName].forEach(callback => {
+                callback(...args);
+            });
+        }
+    }
+    static round(number, precision = 0) {
+        const factor = Math.pow(10, precision);
+        return Math.round(number * factor) / factor;
+    }
     setCounter(value) {
         if (value < 0) {
             throw new Error('Counter must be greater than or equal to 0');
         }
         this._counter = value;
-        if (this._events['change']) {
-            this._events['change'].forEach((callback) => {
-                callback(this);
-            });
+        this.raiseEvent('change', this);
+    }
+    setTotalCount(value) {
+        if (value < 0) {
+            throw new Error('Total count must be greater than or equal to 0');
         }
+        this._totalCount = value;
+        this.raiseEvent('change', this);
     }
     toFormattedString(format = Progress.DEFAULT_TO_STRING_FORMAT) {
         const elapsedTime = this.ElapsedTime;
@@ -120,12 +156,12 @@ class Progress {
             formattedETA = `${etaYear}-${etaMonth}-${etaDay} ${etaHour}:${etaMinute}:${etaSecond}`;
         }
         const replacements = {
-            '${Counter}': this._counter.toString(),
+            '${Counter}': this.formatValue(this._counter, this._locale),
             '${ElapsedTime}': `${String(elapsedTime.h).padStart(2, '0')}:${String(elapsedTime.i).padStart(2, '0')}:${String(elapsedTime.s).padStart(2, '0')}`,
             '${EstimatedTimeEnroute}': ete ? `${String(ete.hours).padStart(2, '0')}:${String(ete.minutes).padStart(2, '0')}:${String(ete.seconds).padStart(2, '0')}` : 'N/A',
             '${EstimatedTimeOfArrival}': formattedETA,
             '${PercentageCompleted}': this.PercentageCompleted !== null ? this.PercentageCompleted.toFixed(2) : 'N/A',
-            '${TotalCount}': this._totalCount ? this._totalCount.toString() : '-',
+            '${TotalCount}': this._totalCount ? this.formatValue(this._totalCount, this._locale) : '-',
         };
         for (const key in replacements) {
             format = format.replace(key, replacements[key]);

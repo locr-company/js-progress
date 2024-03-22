@@ -2,9 +2,11 @@ export default class Progress {
     static readonly DEFAULT_TO_STRING_FORMAT: string;
     private _counter;
     private _events;
+    private _locale;
     private _startTime;
     private _totalCount;
-    constructor(totalCount?: number | null);
+    private _unit;
+    constructor(totalCount?: number | null, locale?: string | null, unit?: string | null);
     get Counter(): number;
     get ElapsedTime(): {
         y: number;
@@ -24,8 +26,12 @@ export default class Progress {
         seconds: number;
     } | null;
     calculateEstimatedTimeOfArrival(): Date | null;
+    private formatValue;
     incrementCounter(): void;
     on(eventName: string, callback: Function): void;
+    private raiseEvent;
+    private static round;
     setCounter(value: number): void;
+    setTotalCount(value: number): void;
     toFormattedString(format?: string): string;
 }
