@@ -101,7 +101,7 @@ describe('Progress', function () {
             const progress = new Progress(55);
             progress.setCounter(1);
 
-            await new Promise((resolve) => setTimeout(resolve, 1_000));
+            await new Promise((resolve) => setTimeout(resolve, 1_010));
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
@@ -115,7 +115,7 @@ describe('Progress', function () {
             const progress = new Progress(90);
             progress.setCounter(1);
 
-            await new Promise((resolve) => setTimeout(resolve, 1_000));
+            await new Promise((resolve) => setTimeout(resolve, 1_010));
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
