@@ -1,9 +1,20 @@
 import assert from 'assert';
 import { expect } from 'chai';
+import sinon from 'sinon';
 
 import Progress from '../src/js/Progress.js';
 
 describe('Progress', function () {
+    let clock;
+
+    beforeEach(function() {
+        clock = sinon.useFakeTimers();
+    });
+
+    afterEach(function() {
+        clock.restore();
+    });
+
     describe('constructor', function () {
         it('default values for a new instance', function () {
             const testStartTime = new Date();
@@ -70,11 +81,11 @@ describe('Progress', function () {
     });
 
     describe('method calculateEstimatedTimeOfArrival', function () {
-        it('estimated time of arrival', async function () {
+        it('estimated time of arrival', function () {
             const progress = new Progress(1_000);
             progress.incrementCounter();
 
-            await new Promise((resolve) => setTimeout(resolve, 1_000));
+            clock.tick(1_000);
 
             const eta = progress.calculateEstimatedTimeOfArrival();
             expect(eta).to.be.instanceOf(Date);
@@ -85,11 +96,11 @@ describe('Progress', function () {
     });
 
     describe('method calculateEstimatedTimeEnroute', function () {
-        it('estimated time enroute is greater than 0 seconds', async function () {
+        it('estimated time enroute is greater than 0 seconds', function () {
             const progress = new Progress(1_000);
             progress.setCounter(200);
 
-            await new Promise((resolve) => setTimeout(resolve, 1_010));
+            clock.tick(1_000);
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
@@ -97,11 +108,11 @@ describe('Progress', function () {
             expect(ete.seconds).to.be.at.most(5);
         });
 
-        it('estimated time enroute is less than 60 seconds', async function () {
+        it('estimated time enroute is less than 60 seconds', function () {
             const progress = new Progress(55);
             progress.setCounter(1);
 
-            await new Promise((resolve) => setTimeout(resolve, 1_010));
+            clock.tick(1_000);
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
@@ -111,11 +122,11 @@ describe('Progress', function () {
             expect(ete.seconds).to.be.at.most(60);
         });
 
-        it('estimated time enroute equals 1 minute', async function () {
+        it('estimated time enroute equals 1 minute', function () {
             const progress = new Progress(90);
             progress.setCounter(1);
 
-            await new Promise((resolve) => setTimeout(resolve, 1_010));
+            clock.tick(1_000);
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
@@ -123,11 +134,11 @@ describe('Progress', function () {
             assert.equal(ete.minutes, 1);
         });
 
-        it('estimated time enroute is less than 1 hour', async function () {
+        it('estimated time enroute is less than 1 hour', function () {
             const progress = new Progress(3_500);
             progress.setCounter(1);
 
-            await new Promise((resolve) => setTimeout(resolve, 1_000));
+            clock.tick(1_000);
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
@@ -136,11 +147,11 @@ describe('Progress', function () {
             expect(ete.minutes).to.be.at.most(60);
         });
 
-        it('estimated time enroute equals 1 hour', async function () {
+        it('estimated time enroute equals 1 hour', function () {
             const progress = new Progress(3_700);
             progress.setCounter(1);
 
-            await new Promise((resolve) => setTimeout(resolve, 1_000));
+            clock.tick(1_000);
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
@@ -172,7 +183,7 @@ describe('Progress', function () {
     });
 
     describe('method on with ms threshold option', function () {
-        it('change event for incrementCounter with ms threshold option', async function () {
+        it('change event for incrementCounter with ms threshold option', function () {
             let eventFiredCounter = 0;
             const progress = new Progress();
             progress.on(
@@ -187,7 +198,7 @@ describe('Progress', function () {
                 progress.incrementCounter();
             }
 
-            await new Promise((resolve) => setTimeout(resolve, 110));
+            clock.tick(110);
 
             progress.incrementCounter();
 
@@ -289,10 +300,10 @@ describe('Progress', function () {
             assert.equal(matched, true);
         });
 
-        it('to formatted string with totalCount', async function () {
+        it('to formatted string with totalCount', function () {
             const progress = new Progress(1_000);
 
-            await new Promise((resolve) => setTimeout(resolve, 1_000));
+            clock.tick(1_000);
 
             progress.incrementCounter();
 
@@ -308,10 +319,10 @@ describe('Progress', function () {
             assert.equal(matched, true);
         });
 
-        it('to formatted string with totalCount and locale', async function () {
+        it('to formatted string with totalCount and locale', function () {
             const progress = new Progress(1_000, 'de-DE');
 
-            await new Promise((resolve) => setTimeout(resolve, 1_000));
+            clock.tick(1_000);
 
             progress.incrementCounter();
 
