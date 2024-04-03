@@ -38,6 +38,202 @@ describe('Progress', function () {
         });
     });
 
+    describe('ElapsedTime property', function () {
+        it('ElapsedTime property is 0', function () {
+            const progress = new Progress();
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 0);
+            assert.equal(elapsedTime.s, 0);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 second', function () {
+            const progress = new Progress();
+
+            clock.tick(1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 0);
+            assert.equal(elapsedTime.s, 1);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 59 second', function () {
+            const progress = new Progress();
+
+            clock.tick(59 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 0);
+            assert.equal(elapsedTime.s, 59);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 minute', function () {
+            const progress = new Progress();
+
+            clock.tick(60 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 1);
+            assert.equal(elapsedTime.s, 0);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 minute and 1 second', function () {
+            const progress = new Progress();
+
+            clock.tick(61 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 1);
+            assert.equal(elapsedTime.s, 1);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 59 minutes and 59 seconds', function () {
+            const progress = new Progress();
+
+            clock.tick(59 * 60 * 1_000 + 59 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 59);
+            assert.equal(elapsedTime.s, 59);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 hour', function () {
+            const progress = new Progress();
+
+            clock.tick(60 * 60 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 1);
+            assert.equal(elapsedTime.i, 0);
+            assert.equal(elapsedTime.s, 0);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 hour and 1 minute', function () {
+            const progress = new Progress();
+
+            clock.tick(61 * 60 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 1);
+            assert.equal(elapsedTime.i, 1);
+            assert.equal(elapsedTime.s, 0);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 23 hours, 59 minutes as 59 seconds', function () {
+            const progress = new Progress();
+
+            clock.tick(23 * 60 * 60 * 1_000 +  59 * 60 * 1_000 + 59 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 23);
+            assert.equal(elapsedTime.i, 59);
+            assert.equal(elapsedTime.s, 59);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 day', function () {
+            const progress = new Progress();
+
+            clock.tick(24 * 60 * 60 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 1);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 0);
+            assert.equal(elapsedTime.s, 0);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 day and 1 hour', function () {
+            const progress = new Progress();
+
+            clock.tick(25 * 60 * 60 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 1);
+            assert.equal(elapsedTime.h, 1);
+            assert.equal(elapsedTime.i, 0);
+            assert.equal(elapsedTime.s, 0);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 364 days, 23 hours, 59 minutes and 59 seconds', function () {
+            const progress = new Progress();
+
+            clock.tick(364 * 24 * 60 * 60 * 1_000 + 23 * 60 * 60 * 1_000 + 59 * 60 * 1_000 + 59 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 0);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 364);
+            assert.equal(elapsedTime.h, 23);
+            assert.equal(elapsedTime.i, 59);
+            assert.equal(elapsedTime.s, 59);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 year', function () {
+            const progress = new Progress();
+
+            clock.tick(365 * 24 * 60 * 60 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 1);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 0);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 0);
+            assert.equal(elapsedTime.s, 0);
+            assert.equal(elapsedTime.f, 0);
+        });
+
+        it('ElapsedTime property is 1 year and 1 day', function () {
+            const progress = new Progress();
+
+            clock.tick(366 * 24 * 60 * 60 * 1_000);
+            const elapsedTime = progress.ElapsedTime;
+            assert.equal(elapsedTime.y, 1);
+            assert.equal(elapsedTime.m, 0);
+            assert.equal(elapsedTime.d, 1);
+            assert.equal(elapsedTime.h, 0);
+            assert.equal(elapsedTime.i, 0);
+            assert.equal(elapsedTime.s, 0);
+            assert.equal(elapsedTime.f, 0);
+        });
+    });
+
     describe('method incrementCounter', function () {
         it('incrementCounter', function () {
             const progress = new Progress(1_000);
@@ -57,6 +253,10 @@ describe('Progress', function () {
             progress.setCounter(500);
             assert.equal(progress.Counter, 500);
             assert.equal(progress.PercentageCompleted, 50);
+
+            progress.setCounter(0);
+            assert.equal(progress.Counter, 0);
+            assert.equal(progress.PercentageCompleted, 0);
         });
 
         it('set invalid counter', function () {
@@ -69,6 +269,9 @@ describe('Progress', function () {
         it('setTotalCounter', function () {
             const progress = new Progress();
             expect(progress.TotalCount).to.be.null;
+
+            progress.setTotalCount(0);
+            assert.equal(progress.TotalCount, 0);
 
             progress.setTotalCount(1_000);
             assert.equal(progress.TotalCount, 1_000);
@@ -104,8 +307,13 @@ describe('Progress', function () {
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
-            expect(ete.seconds).to.be.at.least(3);
-            expect(ete.seconds).to.be.at.most(5);
+            assert.equal(ete.y, 0);
+            assert.equal(ete.m, 0);
+            assert.equal(ete.d, 0);
+            assert.equal(ete.h, 0);
+            assert.equal(ete.i, 0);
+            assert.equal(ete.s, 4);
+            assert.equal(ete.f, 0);
         });
 
         it('estimated time enroute is less than 60 seconds', function () {
@@ -116,47 +324,123 @@ describe('Progress', function () {
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
-            assert.equal(ete.hours, 0);
-            assert.equal(ete.minutes, 0);
-            expect(ete.seconds).to.be.at.least(50);
-            expect(ete.seconds).to.be.at.most(60);
+            assert.equal(ete.h, 0);
+            assert.equal(ete.i, 0);
         });
 
         it('estimated time enroute equals 1 minute', function () {
-            const progress = new Progress(90);
+            const progress = new Progress(61);
             progress.setCounter(1);
 
             clock.tick(1_000);
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
-            assert.equal(ete.hours, 0);
-            assert.equal(ete.minutes, 1);
+            assert.equal(ete.y, 0);
+            assert.equal(ete.m, 0);
+            assert.equal(ete.d, 0);
+            assert.equal(ete.h, 0);
+            assert.equal(ete.i, 1);
+            assert.equal(ete.s, 0);
+            assert.equal(ete.f, 0);
         });
 
         it('estimated time enroute is less than 1 hour', function () {
-            const progress = new Progress(3_500);
+            const progress = new Progress(3_541);
             progress.setCounter(1);
 
             clock.tick(1_000);
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
-            assert.equal(ete.hours, 0);
-            expect(ete.minutes).to.be.at.least(55);
-            expect(ete.minutes).to.be.at.most(60);
+            assert.equal(ete.y, 0);
+            assert.equal(ete.m, 0);
+            assert.equal(ete.d, 0);
+            assert.equal(ete.h, 0);
+            assert.equal(ete.i, 59);
+            assert.equal(ete.s, 0);
+            assert.equal(ete.f, 0);
         });
 
         it('estimated time enroute equals 1 hour', function () {
-            const progress = new Progress(3_700);
+            const progress = new Progress(3_601);
             progress.setCounter(1);
 
             clock.tick(1_000);
 
             const ete = progress.calculateEstimatedTimeEnroute();
             expect(ete).to.be.not.null;
-            assert.equal(ete.hours, 1);
-            assert.equal(ete.minutes, 1);
+            assert.equal(ete.y, 0);
+            assert.equal(ete.m, 0);
+            assert.equal(ete.d, 0);
+            assert.equal(ete.h, 1);
+            assert.equal(ete.i, 0);
+            assert.equal(ete.s, 0);
+            assert.equal(ete.f, 0);
+        });
+
+        it('estimated time enroute equals 1 hour where time is 1 min later', function () {
+            const progress = new Progress(61);
+            progress.setCounter(1);
+
+            clock.tick(60 * 1_000);
+            const ete = progress.calculateEstimatedTimeEnroute();
+            expect(ete).to.be.not.null;
+            assert.equal(ete.y, 0);
+            assert.equal(ete.m, 0);
+            assert.equal(ete.d, 0);
+            assert.equal(ete.h, 1);
+            assert.equal(ete.i, 0);
+            assert.equal(ete.s, 0);
+            assert.equal(ete.f, 0);
+        });
+
+        it('estimated time enroute equals 1 day where time is 1 hour later', function () {
+            const progress = new Progress(25);
+            progress.setCounter(1);
+
+            clock.tick(60 * 60 * 1_000);
+            const ete = progress.calculateEstimatedTimeEnroute();
+            expect(ete).to.be.not.null;
+            assert.equal(ete.y, 0);
+            assert.equal(ete.m, 0);
+            assert.equal(ete.d, 1);
+            assert.equal(ete.h, 0);
+            assert.equal(ete.i, 0);
+            assert.equal(ete.s, 0);
+            assert.equal(ete.f, 0);
+        });
+
+        it('estimated time enroute equals 1 year where time is 1 day later', function () {
+            const progress = new Progress(366);
+            progress.setCounter(1);
+
+            clock.tick(24 * 60 * 60 * 1_000);
+            const ete = progress.calculateEstimatedTimeEnroute();
+            expect(ete).to.be.not.null;
+            assert.equal(ete.y, 1);
+            assert.equal(ete.m, 0);
+            assert.equal(ete.d, 0);
+            assert.equal(ete.h, 0);
+            assert.equal(ete.i, 0);
+            assert.equal(ete.s, 0);
+            assert.equal(ete.f, 0);
+        });
+
+        it('estimated time enroute equals 1 year where time is 1 year later', function () {
+            const progress = new Progress(2);
+            progress.setCounter(1);
+
+            clock.tick(365 * 24 * 60 * 60 * 1_000);
+            const ete = progress.calculateEstimatedTimeEnroute();
+            expect(ete).to.be.not.null;
+            assert.equal(ete.y, 1);
+            assert.equal(ete.m, 0);
+            assert.equal(ete.d, 0);
+            assert.equal(ete.h, 0);
+            assert.equal(ete.i, 0);
+            assert.equal(ete.s, 0);
+            assert.equal(ete.f, 0);
         });
     });
 
@@ -179,6 +463,16 @@ describe('Progress', function () {
             });
 
             progress.setCounter(2);
+        });
+
+        it('change event for setTotalCount', function () {
+            const progress = new Progress();
+            progress.on('change', progress => {
+                expect(progress).to.be.instanceOf(Progress);
+                assert.equal(progress.TotalCount, 5);
+            });
+
+            progress.setTotalCount(5);
         });
     });
 

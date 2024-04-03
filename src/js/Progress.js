@@ -16,21 +16,24 @@ class Progress {
     get ElapsedTime() {
         const now = new Date();
         const diffTotalMilliseconds = now.getTime() - this._startTime.getTime();
-        const diffSeconds = diffTotalMilliseconds / 1000;
-        const diffMilliseconds = diffTotalMilliseconds % 1000;
-        const diffMinutes = diffSeconds / 60;
-        const diffHours = diffMinutes / 60;
-        const diffDays = diffHours / 24;
-        const diffMonths = diffDays / 30;
-        const diffYears = diffMonths / 12;
+        const diffTotalSeconds = diffTotalMilliseconds / 1000;
+        const milliseconds = diffTotalMilliseconds % 1000;
+        const diffTotalMinutes = diffTotalSeconds / 60;
+        const seconds = Math.floor(diffTotalSeconds % 60);
+        const diffTotalHours = diffTotalMinutes / 60;
+        const minutes = Math.floor(diffTotalMinutes % 60);
+        const diffTotalDays = diffTotalHours / 24;
+        const hours = Math.floor(diffTotalHours % 24);
+        const years = Math.floor(diffTotalDays / 365);
+        const days = Math.floor(diffTotalDays % 365);
         return {
-            y: Math.floor(diffYears),
-            m: Math.floor(diffMonths),
-            d: Math.floor(diffDays),
-            h: Math.floor(diffHours),
-            i: Math.floor(diffMinutes),
-            s: Math.floor(diffSeconds),
-            f: diffMilliseconds
+            y: years,
+            m: 0,
+            d: days,
+            h: hours,
+            i: minutes,
+            s: seconds,
+            f: milliseconds
         };
     }
     get PercentageCompleted() {
@@ -54,24 +57,38 @@ class Progress {
             elapsedTime.i * 60 +
             elapsedTime.h * 3600 +
             elapsedTime.d * 86400 +
-            elapsedTime.m * 2592000 +
+            //elapsedTime.m * 2_592_000 +
             elapsedTime.y * 31536000;
+        let yearsRemaining = 0;
+        let daysRemaining = 0;
         let hoursRemaining = 0;
         let minutesRemaining = 0;
         let secondsRemaining = (totalElapsedSeconds / this._counter * (this._totalCount - this._counter));
         if (secondsRemaining >= 60) {
             minutesRemaining = Math.floor(secondsRemaining / 60);
             secondsRemaining = secondsRemaining % 60;
-            if (minutesRemaining >= 60) {
-                hoursRemaining = Math.floor(minutesRemaining / 60);
-                minutesRemaining = minutesRemaining % 60;
-            }
+        }
+        if (minutesRemaining >= 60) {
+            hoursRemaining = Math.floor(minutesRemaining / 60);
+            minutesRemaining = minutesRemaining % 60;
+        }
+        if (hoursRemaining >= 24) {
+            daysRemaining = Math.floor(hoursRemaining / 24);
+            hoursRemaining = hoursRemaining % 24;
+        }
+        if (daysRemaining >= 365) {
+            yearsRemaining = Math.floor(daysRemaining / 365);
+            daysRemaining = daysRemaining % 365;
         }
         secondsRemaining = Math.floor(secondsRemaining);
         return {
-            hours: hoursRemaining,
-            minutes: minutesRemaining,
-            seconds: secondsRemaining
+            y: yearsRemaining,
+            m: 0,
+            d: daysRemaining,
+            h: hoursRemaining,
+            i: minutesRemaining,
+            s: secondsRemaining,
+            f: 0
         };
     }
     calculateEstimatedTimeOfArrival() {
@@ -80,7 +97,7 @@ class Progress {
             return null;
         }
         const now = new Date();
-        now.setTime(now.getTime() + ete.hours * 60 * 60 * 1000 + ete.minutes * 60 * 1000 + ete.seconds * 1000);
+        now.setTime(now.getTime() + ete.h * 60 * 60 * 1000 + ete.i * 60 * 1000 + ete.s * 1000);
         return now;
     }
     formatValue(value, locale = null) {
@@ -168,7 +185,7 @@ class Progress {
         const replacements = {
             '${Counter}': this.formatValue(this._counter, this._locale),
             '${ElapsedTime}': `${String(elapsedTime.h).padStart(2, '0')}:${String(elapsedTime.i).padStart(2, '0')}:${String(elapsedTime.s).padStart(2, '0')}`,
-            '${EstimatedTimeEnroute}': ete ? `${String(ete.hours).padStart(2, '0')}:${String(ete.minutes).padStart(2, '0')}:${String(ete.seconds).padStart(2, '0')}` : 'N/A',
+            '${EstimatedTimeEnroute}': ete ? `${String(ete.h).padStart(2, '0')}:${String(ete.i).padStart(2, '0')}:${String(ete.s).padStart(2, '0')}` : 'N/A',
             '${EstimatedTimeOfArrival}': formattedETA,
             '${PercentageCompleted}': this.PercentageCompleted !== null ? this.PercentageCompleted.toFixed(2) : 'N/A',
             '${TotalCount}': this._totalCount ? this.formatValue(this._totalCount, this._locale) : '-',
