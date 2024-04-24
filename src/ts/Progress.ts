@@ -26,11 +26,11 @@ export default class Progress {
     /**
      * @ignore
      */
-    private _counter: number = 0;
+    private _counter = 0;
     /**
      * @ignore
      */
-    private _events: { [key: string]: { callback: Function, options: EventOptions, internalData: EventInternalData }[] } = {};
+    private _events: { [key: string]: { callback: (progress: Progress) => void, options: EventOptions, internalData: EventInternalData }[] } = {};
     /**
      * @ignore
      */
@@ -219,7 +219,7 @@ export default class Progress {
     public incrementCounter(): void {
         this._counter++;
 
-        this.raiseEvent('change', this);
+        this.raiseEvent('change');
     }
 
     /**
@@ -233,7 +233,7 @@ export default class Progress {
      * progress.incrementCounter(); // fires the 'change' event
      * ```
      */
-    public on(eventName: string, callback: Function, options: EventOptions = {}): void {
+    public on(eventName: string, callback: (progress: Progress) => void, options: EventOptions = {}): void {
         if (!this._events[eventName]) {
             this._events[eventName] = [];
         }
@@ -243,7 +243,7 @@ export default class Progress {
     /**
      * @ignore
      */
-    private raiseEvent(eventName: string, ...args: any[]): void {
+    private raiseEvent(eventName: string): void {
         if (this._events[eventName]) {
             this._events[eventName].forEach(evt => {
                 if (typeof evt.options.updateIntervalMSThreshold === 'number' && evt.internalData.lastTimeEventFired) {
@@ -255,7 +255,7 @@ export default class Progress {
 
                 evt.internalData.lastTimeEventFired = new Date();
 
-                evt.callback(...args);
+                evt.callback(this);
             });
         }
     }
@@ -263,7 +263,7 @@ export default class Progress {
     /**
      * @ignore
      */
-    private static round(number: number, precision: number = 0): number {
+    private static round(number: number, precision = 0): number {
 		const factor = Math.pow(10, precision);
 		return Math.round(number * factor) / factor;
 	}
@@ -277,7 +277,7 @@ export default class Progress {
         }
         this._counter = value;
 
-        this.raiseEvent('change', this);
+        this.raiseEvent('change');
     }
 
     /**
@@ -289,7 +289,7 @@ export default class Progress {
         }
         this._totalCount = value;
 
-        this.raiseEvent('change', this);
+        this.raiseEvent('change');
     }
 
     /**

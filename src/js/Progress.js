@@ -1,18 +1,42 @@
+/**
+ * A class for handling progress
+ */
 class Progress {
     constructor(totalCount = null, locale = null, unit = null) {
+        /**
+         * @ignore
+         */
         this._counter = 0;
+        /**
+         * @ignore
+         */
         this._events = {};
+        /**
+         * @ignore
+         */
         this._locale = null;
+        /**
+         * @ignore
+         */
         this._totalCount = null;
+        /**
+         * @ignore
+         */
         this._unit = null;
         this._locale = locale;
         this._startTime = new Date();
         this._totalCount = totalCount;
         this._unit = unit;
     }
+    /**
+     * Gets the current counter value
+     */
     get Counter() {
         return this._counter;
     }
+    /**
+     * Gets the elapsed time since the progress was started
+     */
     get ElapsedTime() {
         const now = new Date();
         const diffTotalMilliseconds = now.getTime() - this._startTime.getTime();
@@ -36,18 +60,30 @@ class Progress {
             f: milliseconds
         };
     }
+    /**
+     * Gets the percentage of the progress that has been completed
+     */
     get PercentageCompleted() {
         if (this._totalCount === null) {
             return null;
         }
         return this._counter / this._totalCount * 100;
     }
+    /**
+     * Gets the start time of the progress
+     */
     get StartTime() {
         return this._startTime;
     }
+    /**
+     * Gets the total count of the progress
+     */
     get TotalCount() {
         return this._totalCount;
     }
+    /**
+     * Calculatees the estimated time enroute
+     */
     calculateEstimatedTimeEnroute() {
         if (this._totalCount === null || this._counter === 0) {
             return null;
@@ -91,6 +127,9 @@ class Progress {
             f: 0
         };
     }
+    /**
+     * Calculates the estimated time of arrival
+     */
     calculateEstimatedTimeOfArrival() {
         const ete = this.calculateEstimatedTimeEnroute();
         if (ete === null) {
@@ -100,6 +139,9 @@ class Progress {
         now.setTime(now.getTime() + ete.h * 60 * 60 * 1000 + ete.i * 60 * 1000 + ete.s * 1000);
         return now;
     }
+    /**
+     * @ignore
+     */
     formatValue(value, locale = null) {
         const options = {};
         let unitExt = '';
@@ -125,17 +167,34 @@ class Progress {
         }
         return valueString + unitExt;
     }
+    /**
+     * Increments the counter by 1
+     */
     incrementCounter() {
         this._counter++;
-        this.raiseEvent('change', this);
+        this.raiseEvent('change');
     }
+    /**
+     * Adds an event listener
+     *
+     * ```typescript
+     * const progress = new Progress();
+     * progress.on('change', (progress) => {
+     *    console.log(progress.toFormattedString());
+     * });
+     * progress.incrementCounter(); // fires the 'change' event
+     * ```
+     */
     on(eventName, callback, options = {}) {
         if (!this._events[eventName]) {
             this._events[eventName] = [];
         }
         this._events[eventName].push({ callback, options, internalData: {} });
     }
-    raiseEvent(eventName, ...args) {
+    /**
+     * @ignore
+     */
+    raiseEvent(eventName) {
         if (this._events[eventName]) {
             this._events[eventName].forEach(evt => {
                 if (typeof evt.options.updateIntervalMSThreshold === 'number' && evt.internalData.lastTimeEventFired) {
@@ -145,28 +204,40 @@ class Progress {
                     }
                 }
                 evt.internalData.lastTimeEventFired = new Date();
-                evt.callback(...args);
+                evt.callback(this);
             });
         }
     }
+    /**
+     * @ignore
+     */
     static round(number, precision = 0) {
         const factor = Math.pow(10, precision);
         return Math.round(number * factor) / factor;
     }
+    /**
+     * Sets the counter to a specific value
+     */
     setCounter(value) {
         if (value < 0) {
             throw new Error('Counter must be greater than or equal to 0');
         }
         this._counter = value;
-        this.raiseEvent('change', this);
+        this.raiseEvent('change');
     }
+    /**
+     * Sets the total count of the progress
+     */
     setTotalCount(value) {
         if (value < 0) {
             throw new Error('Total count must be greater than or equal to 0');
         }
         this._totalCount = value;
-        this.raiseEvent('change', this);
+        this.raiseEvent('change');
     }
+    /**
+     * Converts the progress to a formatted string
+     */
     toFormattedString(format = Progress.DEFAULT_TO_STRING_FORMAT) {
         const elapsedTime = this.ElapsedTime;
         const ete = this.calculateEstimatedTimeEnroute();

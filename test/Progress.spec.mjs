@@ -1,18 +1,21 @@
 import assert from 'assert';
 import { expect } from 'chai';
-import sinon from 'sinon';
+import FakeTimers from '@sinonjs/fake-timers';
 
 import Progress from '../src/js/Progress.js';
 
 describe('Progress', function () {
+    /**
+     * @type {FakeTimers.InstalledClock}
+     */
     let clock;
 
     beforeEach(function() {
-        clock = sinon.useFakeTimers();
+        clock = FakeTimers.install();
     });
 
     afterEach(function() {
-        clock.restore();
+        clock.uninstall();
     });
 
     describe('constructor', function () {
