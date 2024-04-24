@@ -24,27 +24,27 @@ export default class Progress {
         '; eta: ${EstimatedTimeOfArrival}';
 
     /**
-     * @private
+     * @ignore
      */
     private _counter: number = 0;
     /**
-     * @private
+     * @ignore
      */
     private _events: { [key: string]: { callback: Function, options: EventOptions, internalData: EventInternalData }[] } = {};
     /**
-     * @private
+     * @ignore
      */
     private _locale: string | null = null;
     /**
-     * @private
+     * @ignore
      */
     private _startTime: Date;
     /**
-     * @private
+     * @ignore
      */
     private _totalCount: number | null = null;
     /**
-     * @private
+     * @ignore
      */
     private _unit: string | null = null;
 
@@ -158,7 +158,7 @@ export default class Progress {
     }
 
     /**
-     * @private
+     * @ignore
      */
     private formatValue(value: number, locale: string | null = null): string {
         const options: {
@@ -206,7 +206,7 @@ export default class Progress {
     }
 
     /**
-     * @private
+     * @ignore
      */
     private raiseEvent(eventName: string, ...args: any[]): void {
         if (this._events[eventName]) {
@@ -226,7 +226,7 @@ export default class Progress {
     }
 
     /**
-     * @private
+     * @ignore
      */
     private static round(number: number, precision: number = 0): number {
 		const factor = Math.pow(10, precision);
