@@ -55,10 +55,16 @@ export default class Progress {
         this._unit = unit;
     }
 
+    /**
+     * Gets the current counter value
+     */
     public get Counter(): number {
         return this._counter;
     }
 
+    /**
+     * Gets the elapsed time since the progress was started
+     */
     public get ElapsedTime(): DateInterval {
         const now = new Date();
         const diffTotalMilliseconds = now.getTime() - this._startTime.getTime();
@@ -84,6 +90,9 @@ export default class Progress {
         };
     }
 
+    /**
+     * Gets the percentage of the progress that has been completed
+     */
     public get PercentageCompleted(): number | null {
         if (this._totalCount === null) {
             return null;
@@ -91,14 +100,23 @@ export default class Progress {
         return this._counter / this._totalCount * 100;
     }
 
+    /**
+     * Gets the start time of the progress
+     */
     public get StartTime(): Date {
         return this._startTime;
     }
 
+    /**
+     * Gets the total count of the progress
+     */
     public get TotalCount(): number | null {
         return this._totalCount;
     }
 
+    /**
+     * Calculatees the estimated time enroute
+     */
     public calculateEstimatedTimeEnroute(): DateInterval | null {
         if (this._totalCount === null || this._counter === 0) {
             return null;
@@ -146,6 +164,9 @@ export default class Progress {
         };
     }
 
+    /**
+     * Calculates the estimated time of arrival
+     */
     public calculateEstimatedTimeOfArrival(): Date | null {
         const ete = this.calculateEstimatedTimeEnroute();
         if (ete === null) {
@@ -192,12 +213,26 @@ export default class Progress {
         return valueString + unitExt;
     }
 
+    /**
+     * Increments the counter by 1
+     */
     public incrementCounter(): void {
         this._counter++;
 
         this.raiseEvent('change', this);
     }
 
+    /**
+     * Adds an event listener
+     * 
+     * ```typescript
+     * const progress = new Progress();
+     * progress.on('change', (progress) => {
+     *    console.log(progress.toFormattedString());
+     * });
+     * progress.incrementCounter(); // fires the 'change' event
+     * ```
+     */
     public on(eventName: string, callback: Function, options: EventOptions = {}): void {
         if (!this._events[eventName]) {
             this._events[eventName] = [];
@@ -233,6 +268,9 @@ export default class Progress {
 		return Math.round(number * factor) / factor;
 	}
 
+    /**
+     * Sets the counter to a specific value
+     */
     public setCounter(value: number): void {
         if (value < 0) {
             throw new Error('Counter must be greater than or equal to 0');
@@ -242,6 +280,9 @@ export default class Progress {
         this.raiseEvent('change', this);
     }
 
+    /**
+     * Sets the total count of the progress
+     */
     public setTotalCount(value: number): void {
         if (value < 0) {
             throw new Error('Total count must be greater than or equal to 0');
@@ -251,6 +292,9 @@ export default class Progress {
         this.raiseEvent('change', this);
     }
 
+    /**
+     * Converts the progress to a formatted string
+     */
     public toFormattedString(format: string = Progress.DEFAULT_TO_STRING_FORMAT): string {
         const elapsedTime = this.ElapsedTime;
         const ete = this.calculateEstimatedTimeEnroute();
