@@ -1,0 +1,5 @@
+{
+    "name": "@locr-company/js-progress",
+    "version": "0.1.0",
+    "exports": "./src/ts/Progress.ts"
+}
