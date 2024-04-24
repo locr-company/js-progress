@@ -14,17 +14,38 @@ type EventInternalData = {
     lastTimeEventFired?: Date
 };
 
+/**
+ * A class for handling progress
+ */
 export default class Progress {
     public static readonly DEFAULT_TO_STRING_FORMAT = 'progress => ${Counter}/${TotalCount} (${PercentageCompleted}%)' +
         '; elapsed: ${ElapsedTime}' +
         '; ete: ${EstimatedTimeEnroute}' +
         '; eta: ${EstimatedTimeOfArrival}';
 
+    /**
+     * @private
+     */
     private _counter: number = 0;
+    /**
+     * @private
+     */
     private _events: { [key: string]: { callback: Function, options: EventOptions, internalData: EventInternalData }[] } = {};
+    /**
+     * @private
+     */
     private _locale: string | null = null;
+    /**
+     * @private
+     */
     private _startTime: Date;
+    /**
+     * @private
+     */
     private _totalCount: number | null = null;
+    /**
+     * @private
+     */
     private _unit: string | null = null;
 
     constructor(totalCount: number | null = null, locale: string | null = null, unit: string | null = null) {
@@ -136,6 +157,9 @@ export default class Progress {
         return now;
     }
 
+    /**
+     * @private
+     */
     private formatValue(value: number, locale: string | null = null): string {
         const options: {
             minimumFractionDigits?: number,
@@ -181,6 +205,9 @@ export default class Progress {
         this._events[eventName].push({ callback, options, internalData: {} });
     }
 
+    /**
+     * @private
+     */
     private raiseEvent(eventName: string, ...args: any[]): void {
         if (this._events[eventName]) {
             this._events[eventName].forEach(evt => {
@@ -198,6 +225,9 @@ export default class Progress {
         }
     }
 
+    /**
+     * @private
+     */
     private static round(number: number, precision: number = 0): number {
 		const factor = Math.pow(10, precision);
 		return Math.round(number * factor) / factor;
