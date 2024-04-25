@@ -1,7 +1,7 @@
 {
     "name": "@locr-company/js-progress",
     "version": "0.1.2",
-    "exports": "./src/ts/Progress.ts",
+    "exports": "./src/ts/mod.ts",
     "fmt": {
         "singleQuote": true,
         "indentWidth": 4,

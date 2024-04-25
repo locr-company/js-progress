@@ -16,7 +16,7 @@
   "keywords": [
     "progress"
   ],
-  "author": "Ringo Leese",
+  "author": "Ringo Leese <r.leese@locr.com>",
   "license": "MIT",
   "engines": {
     "node": ">=16"
@@ -43,5 +43,6 @@
       "text-summary",
       "html"
     ]
-  }
+  },
+  "deno": "./src/ts/mod.ts"
 }
