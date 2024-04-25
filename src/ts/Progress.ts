@@ -1,17 +1,17 @@
 type DateInterval = {
-    y: number,
-    m: number,
-    d: number,
-    h: number,
-    i: number,
-    s: number,
-    f: number
+    y: number;
+    m: number;
+    d: number;
+    h: number;
+    i: number;
+    s: number;
+    f: number;
 };
 type EventOptions = {
-    updateIntervalMSThreshold?: number
+    updateIntervalMSThreshold?: number;
 };
 type EventInternalData = {
-    lastTimeEventFired?: Date
+    lastTimeEventFired?: Date;
 };
 
 /**
@@ -30,7 +30,13 @@ export default class Progress {
     /**
      * @ignore
      */
-    private _events: { [key: string]: { callback: (progress: Progress) => void, options: EventOptions, internalData: EventInternalData }[] } = {};
+    private _events: {
+        [key: string]: {
+            callback: (progress: Progress) => void;
+            options: EventOptions;
+            internalData: EventInternalData;
+        }[];
+    } = {};
     /**
      * @ignore
      */
@@ -86,7 +92,7 @@ export default class Progress {
             h: hours,
             i: minutes,
             s: seconds,
-            f: milliseconds
+            f: milliseconds,
         };
     }
 
@@ -134,7 +140,7 @@ export default class Progress {
         let daysRemaining = 0;
         let hoursRemaining = 0;
         let minutesRemaining = 0;
-        let secondsRemaining = (totalElapsedSeconds / this._counter * (this._totalCount - this._counter));
+        let secondsRemaining = totalElapsedSeconds / this._counter * (this._totalCount - this._counter);
         if (secondsRemaining >= 60) {
             minutesRemaining = Math.floor(secondsRemaining / 60);
             secondsRemaining = secondsRemaining % 60;
@@ -160,7 +166,7 @@ export default class Progress {
             h: hoursRemaining,
             i: minutesRemaining,
             s: secondsRemaining,
-            f: 0
+            f: 0,
         };
     }
 
@@ -183,8 +189,8 @@ export default class Progress {
      */
     private formatValue(value: number, locale: string | null = null): string {
         const options: {
-            minimumFractionDigits?: number,
-            maximumFractionDigits?: number
+            minimumFractionDigits?: number;
+            maximumFractionDigits?: number;
         } = {};
 
         let unitExt = '';
@@ -224,7 +230,7 @@ export default class Progress {
 
     /**
      * Adds an event listener
-     * 
+     *
      * ```typescript
      * const progress = new Progress();
      * progress.on('change', (progress) => {
@@ -245,10 +251,13 @@ export default class Progress {
      */
     private raiseEvent(eventName: string): void {
         if (this._events[eventName]) {
-            this._events[eventName].forEach(evt => {
+            this._events[eventName].forEach((evt) => {
                 if (typeof evt.options.updateIntervalMSThreshold === 'number' && evt.internalData.lastTimeEventFired) {
                     const now = new Date();
-                    if (now.getTime() - evt.internalData.lastTimeEventFired.getTime() < evt.options.updateIntervalMSThreshold) {
+                    if (
+                        now.getTime() - evt.internalData.lastTimeEventFired.getTime() <
+                            evt.options.updateIntervalMSThreshold
+                    ) {
                         return;
                     }
                 }
@@ -264,9 +273,9 @@ export default class Progress {
      * @ignore
      */
     private static round(number: number, precision = 0): number {
-		const factor = Math.pow(10, precision);
-		return Math.round(number * factor) / factor;
-	}
+        const factor = Math.pow(10, precision);
+        return Math.round(number * factor) / factor;
+    }
 
     /**
      * Sets the counter to a specific value
@@ -314,10 +323,21 @@ export default class Progress {
             formattedETA = `${etaYear}-${etaMonth}-${etaDay} ${etaHour}:${etaMinute}:${etaSecond}`;
         }
 
+        let elapsedTimeReplacement = String(elapsedTime.h).padStart(2, '0');
+        elapsedTimeReplacement += `:${String(elapsedTime.i).padStart(2, '0')}`;
+        elapsedTimeReplacement += `:${String(elapsedTime.s).padStart(2, '0')}`;
+
+        let estimatedTimeEnrouteReplacement = 'N/A';
+        if (ete) {
+            estimatedTimeEnrouteReplacement = String(ete.h).padStart(2, '0');
+            estimatedTimeEnrouteReplacement += `:${String(ete.i).padStart(2, '0')}`;
+            estimatedTimeEnrouteReplacement += `:${String(ete.s).padStart(2, '0')}`;
+        }
+
         const replacements: Record<string, string> = {
             '${Counter}': this.formatValue(this._counter, this._locale),
-            '${ElapsedTime}': `${String(elapsedTime.h).padStart(2, '0')}:${String(elapsedTime.i).padStart(2, '0')}:${String(elapsedTime.s).padStart(2, '0')}`,
-            '${EstimatedTimeEnroute}': ete ? `${String(ete.h).padStart(2, '0')}:${String(ete.i).padStart(2, '0')}:${String(ete.s).padStart(2, '0')}` : 'N/A',
+            '${ElapsedTime}': elapsedTimeReplacement,
+            '${EstimatedTimeEnroute}': estimatedTimeEnrouteReplacement,
             '${EstimatedTimeOfArrival}': formattedETA,
             '${PercentageCompleted}': this.PercentageCompleted !== null ? this.PercentageCompleted.toFixed(2) : 'N/A',
             '${TotalCount}': this._totalCount ? this.formatValue(this._totalCount, this._locale) : '-',
