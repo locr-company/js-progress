@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.3] - 2024-04-25
+
+### Added
+
+- support for deno
+
 ## [1.1.2] - 2024-04-03
 
 ### Added
@@ -53,7 +59,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - property: StartTime: Date
 - property: TotalCount: number | null
 
-[unreleased]: https://github.com/locr-company/js-progress/compare/v1.1.2...HEAD
+[unreleased]: https://github.com/locr-company/js-progress/compare/v1.1.3...HEAD
+[1.1.3]: https://github.com/locr-company/js-progress/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/locr-company/js-progress/compare/v1.1.1...v1.1.2
 [1.1.1]: https://github.com/locr-company/js-progress/compare/v1.1.0...v1.1.1
 [1.1.0]: https://github.com/locr-company/js-progress/compare/v1.0.0...v1.1.0
