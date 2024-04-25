@@ -1,6 +1,6 @@
 // url_test.ts
 import { assertEquals, assertLessOrEqual } from "https://deno.land/std@0.223.0/assert/mod.ts";
-import Progress from '../src/ts/Progress.ts';
+import Progress from '../src/ts/mod.ts';
 
 Deno.test("default values for a new instance", () => {
     const testStartTime = new Date();

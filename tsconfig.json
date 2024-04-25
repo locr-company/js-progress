@@ -111,5 +111,6 @@
   ],
   "exclude": [
     "test/**/*.ts",
+    "src//ts/mod.ts"
   ]
 }
