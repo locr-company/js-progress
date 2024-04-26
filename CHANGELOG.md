@@ -7,6 +7,12 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+## [1.1.5] - 2024-04-26
+
+### Fixed
+
+- Publishing process
+
 ## [1.1.4] - 2024-04-25
 
 ### Added
@@ -65,7 +71,8 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 - property: StartTime: Date
 - property: TotalCount: number | null
 
-[unreleased]: https://github.com/locr-company/js-progress/compare/v1.1.4...HEAD
+[unreleased]: https://github.com/locr-company/js-progress/compare/v1.1.5...HEAD
+[1.1.5]: https://github.com/locr-company/js-progress/compare/v1.1.4...v1.1.5
 [1.1.4]: https://github.com/locr-company/js-progress/compare/v1.1.3...v1.1.4
 [1.1.3]: https://github.com/locr-company/js-progress/compare/v1.1.2...v1.1.3
 [1.1.2]: https://github.com/locr-company/js-progress/compare/v1.1.1...v1.1.2
