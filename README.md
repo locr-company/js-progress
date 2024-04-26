@@ -41,8 +41,7 @@ npm install
 # update CHANGELOG.md file
 
 npm version <major>.<minor>.<patch>
-git push
-git push origin --tags
+git push && git push origin --tags
 ```
 
 [info-node]: package.json

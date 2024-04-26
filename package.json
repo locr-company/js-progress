@@ -11,7 +11,8 @@
   "scripts": {
     "test-with-coverage": "c8 npm run test",
     "test": "mocha",
-    "tsc": "tsc"
+    "tsc": "tsc",
+    "version": "npm run tsc && npm run test && VERSION=$(node -p \"require('./package.json').version\") jq '.version=\"'${VERSION}'\"' deno.json > deno.json.tmp && mv deno.json.tmp deno.json"
   },
   "keywords": [
     "progress"
