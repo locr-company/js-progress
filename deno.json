@@ -1,10 +1,10 @@
 {
-    "name": "@locr-company/js-progress",
-    "version": "0.1.2",
-    "exports": "./src/ts/mod.ts",
-    "fmt": {
-        "singleQuote": true,
-        "indentWidth": 4,
-        "lineWidth": 120
-    }
+  "name": "@locr-company/js-progress",
+  "version": "1.1.5",
+  "exports": "./src/ts/mod.ts",
+  "fmt": {
+    "singleQuote": true,
+    "indentWidth": 4,
+    "lineWidth": 120
+  }
 }
