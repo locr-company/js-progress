@@ -28,7 +28,7 @@
     "@types/sinonjs__fake-timers": "^8.1.5",
     "c8": "^10.1.2",
     "chai": "^5.1.0",
-    "mocha": "^10.3.0",
+    "mocha": "^11.0.1",
     "typescript": "^5.4.3"
   },
   "c8": {
