@@ -3,6 +3,10 @@
 
 name: Publish Package on NPM and JSR
 
+permissions:
+  contents: read
+  pull-requests: write
+
 on:
   push:
     tags: '*'
